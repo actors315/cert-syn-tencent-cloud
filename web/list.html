@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>列表</title>
+</head>
+<body>
+
+{{range .Item}}
+    <div>
+        {{.Id}} | {{.DnsApi}} | {{.CdnType}} | {{.MainDomain}} | {{.ExtraDomain}} | {{.LastIssueTime}}
+    </div>
+{{else}}
+    <div>list empty</div>
+{{end}}
+
+</body>
+</html>

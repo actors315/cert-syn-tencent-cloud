@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+sed -i -r "s/localhost/${MYSQL_HOST}/g" /usr/local/qcloud-tools/config/config.yaml
+sed -i -r "s/58117aec3b3252a97be0/${MYSQL_PASSWORD}/g" /usr/local/qcloud-tools/config/config.yaml
+
+./cert-monitor

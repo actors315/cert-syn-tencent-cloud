@@ -1,0 +1,19 @@
+secretId: secretId
+secretKey: secretKey
+
+certificates:
+  test:
+    product: cdn,
+    domain: "www.test.com"
+    publicKeyPath: "/usr/local/public.cer"
+    privateKeyPath: "/usr/local/private.pem"
+    alias: test
+  wildcard:
+    product: ecdn,
+    domain: "*.lingyin99.com"
+    publicKeyPath: "/usr/local/public.cer"
+    privateKeyPath: "/usr/local/private.pem"
+
+cvms:
+  test:
+    region: "ap-seoul"
