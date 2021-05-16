@@ -15,8 +15,10 @@ const (
 )
 
 type DnsApi struct {
-	Id   string
-	Name string
+	Id         string
+	Name       string
+	AppIdName  string
+	AppKeyName string
 }
 
 type IssueForm struct {
@@ -30,10 +32,52 @@ type IssueForm struct {
 	ExtraDomain string
 }
 
-var DnsApiList = []DnsApi{
+type CdnType struct {
+	Id   string
+	Name string
+}
+
+var DnsApiList = map[string]DnsApi{
+	"dns_dp": {
+		Id:         "dns_dp",
+		Name:       "dnspod",
+		AppIdName:  "DP_Id",
+		AppKeyName: "DP_Key",
+	},
+	"dns_cf": {
+		Id:         "dns_cf",
+		Name:       "Cloudflare",
+		AppIdName:  "CF_Token",
+		AppKeyName: "CF_Account_ID",
+	},
+	"dns_gd": {
+		Id:         "dns_cf",
+		Name:       "GoDaddy.com",
+		AppIdName:  "GD_Key",
+		AppKeyName: "GD_Secret",
+	},
+	"dns_aws": {
+		Id:         "dns_aws",
+		Name:       "Amazon Route53",
+		AppIdName:  "AWS_ACCESS_KEY_ID",
+		AppKeyName: "AWS_SECRET_ACCESS_KEY",
+	},
+	"dns_ali": {
+		Id:         "dns_ali",
+		Name:       "Aliyun",
+		AppIdName:  "Ali_Key",
+		AppKeyName: "Ali_Secret",
+	},
+}
+
+var CdnTypeList = []CdnType{
 	{
-		Id:   "dns_dp",
-		Name: "dnspod",
+		Id:   "cdn",
+		Name: "内容分发网络",
+	},
+	{
+		Id:   "ecdn",
+		Name: "全站加速网络",
 	},
 }
 
@@ -64,9 +108,11 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 	tpl, _ := template.ParseFiles(templatePath)
 
 	var form = struct {
-		DnsApiList []DnsApi
+		DnsApiList  map[string]DnsApi
+		CdnTypeList []CdnType
 	}{
 		DnsApiList,
+		CdnTypeList,
 	}
 
 	_ = tpl.Execute(writer, form)
@@ -85,11 +131,14 @@ func (form IssueForm) Add() (err error) {
 		ExtraDomain: form.ExtraDomain,
 	}
 
-	switch form.DnsApi {
-	case "dns_dp":
-		issue.AppIdName = "DP_Id"
-		issue.AppKeyName = "DP_Key"
+	dnsapi, ok := DnsApiList[form.DnsApi]
+	if !ok {
+		fmt.Printf("%s 不存在\n", form.DnsApi)
+		return err
 	}
+
+	issue.AppIdName = dnsapi.AppIdName
+	issue.AppKeyName = dnsapi.AppKeyName
 
 	sqlStr := `INSERT INTO issue_info (
 secret_id,secret_key,dns_api,app_id,app_id_value,app_key,app_key_value,type,main_domain,extra_domain

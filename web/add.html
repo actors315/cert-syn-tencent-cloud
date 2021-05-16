@@ -10,105 +10,132 @@
 <div class="wrapper">
 
     <div class="content-wrapper">
-        <div class="row">
 
-            <div class="col-md-12">
-                <div class="box box-info">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">添加需求</h3>
+        <section class="content">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">添加需求</h3>
+                        </div>
                     </div>
                 </div>
+
+                <form action="/add-domain" name="AddDomain" method="post">
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">SecretId</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                    <input type="text" class="form-control" name="secret_id" maxlength="64"
+                                           placeholder="腾讯云API密钥，SecretId">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">SecretKey</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                    <input type="text" class="form-control" name="secret_key" maxlength="64"
+                                           placeholder="腾讯云API密钥，SecretKey">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">DnsApi</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <select class="form-control" name="dns_api">
+                                        {{range .DnsApiList}}
+                                            <option value="{{.Id}}">{{.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">AppId</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                    <input type="text" class="form-control" name="app_id_value" maxlength="64"
+                                           placeholder="域名DNS产商 AppId">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">AppKey</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                    <input type="text" class="form-control" name="app_key_value" maxlength="64"
+                                           placeholder="域名DNS产商 AppKey">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">CdnType</label>
+
+                            <div class="col-sm-8">
+
+                                <div class="form-group">
+                                    <select class="form-control" name="type">
+                                        {{range .CdnTypeList}}
+                                            <option value="{{.Id}}">{{.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Domain</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                    <input type="text" class="form-control" name="main_domain" maxlength="256"
+                                           placeholder="加速域名">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="box-footer">
+
+                        <label class="col-sm-3 control-label"></label>
+
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <input type="reset" class="btn btn-default" value="重置"/>
+                                <input type="submit" class="btn btn-info" value="提交"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
             </div>
 
-            <form action="/add-domain" method="post">
-
-            <div class="box-body">
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">AppId</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="secret_id" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">SecretKey</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="secret_key" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">DnsApi</label>
-
-                    <div class="col-sm-8">
-                        <select name="dns_api">
-                            {{range .DnsApiList}}
-                            <option value="{{.Id}}">{{.Name}}</option>
-                            {{end}}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">AppId</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="app_id_value" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">AppKey</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="app_key_value" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">CdnType</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="type" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Domain</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="main_domain" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">ExtraDomain</label>
-
-                    <div class="col-sm-8">
-                        <input type="text" name="extra_domain" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-11">
-                        <input type="submit" value="提交" />
-                        <input type="reset" value="重置" />
-                    </div>
-                </div>
-
-            </div>
-
-            </form>
-
-        </div>
+        </section>
     </div>
 
 </div>
 
 <script src="static/jquery.min.js"></script>
 <script src="static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script src="static/js/cert.js"></script>
 </body>
 </html>
