@@ -23,10 +23,10 @@ func checkUpdate() {
 
 	var err error
 	fields := "id,secret_id,secret_key,app_id,app_id_value,app_key,app_key_value,dns_api,type,main_domain,extra_domain FROM issue_info"
-	sqlStr := fmt.Sprintf("SELECT %s WHERE last_issue_time < ?", fields)
+	sqlStr := fmt.Sprintf("SELECT %s WHERE last_issue_time < ? AND last_check_time < ?", fields)
 	now := time.Now().Unix()
 
-	rows, err := db.QcloudToolDb.Query(sqlStr, now-31*86400)
+	rows, err := db.QcloudToolDb.Query(sqlStr, now-31*86400, now-86400)
 	if err != nil {
 		return
 	}

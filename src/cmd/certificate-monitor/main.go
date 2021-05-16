@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"qcloud-tools/src/certificate"
+	"qcloud-tools/src/tools"
 	"qcloud-tools/src/web"
 )
 
@@ -12,7 +13,11 @@ func main() {
 	// 开启一个定时器
 	go certificate.TickerSchedule()
 
-	http.HandleFunc("/add-domain", AddDomain)
+	rootPath := tools.GetRootPath()
+	staticPath := fmt.Sprintf("%s/web/static", rootPath)
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
+	http.HandleFunc("/add-domain", web.AddDomain)
 	http.HandleFunc("/list", web.GetList)
 	http.HandleFunc("/", Welcome)
 
@@ -24,9 +29,4 @@ func main() {
 func Welcome(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "text/html")
 	fmt.Fprint(writer, "<div>Welcome ~~</div>")
-}
-
-func AddDomain(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(writer, "<div>AddDomain ~~</div>")
 }
