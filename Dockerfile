@@ -23,7 +23,6 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
 	&& cd acme.sh-master \
 	&& ./acme.sh --install --nocron \
 # 清理
-    && rm -rf /usr/local/src/* \
     && yum remove -y wget \
     && yum clean all
 
@@ -38,8 +37,7 @@ RUN cd /usr/local/src/qcloud-tools \
     && mv /usr/local/src/qcloud-tools/config/issue-template.tpl /usr/local/qcloud-tools/config/issue-template.tpl \
     && mv /usr/local/src/qcloud-tools/web /usr/local/qcloud-tools/ \
     && mv /usr/local/src/qcloud-tools/Dockerstart /start \
-    && chmod +x /start \
-    && rm -rf /usr/local/src/*
+    && chmod +x /start
 
 EXPOSE 80
 
