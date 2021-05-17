@@ -2,9 +2,6 @@ FROM centos:8
 
 MAINTAINER actors315 <actors315@gmail.com>
 
-ENV MYSQL_HOST=localhost
-ENV MYSQL_PASSWORD=58117aec3b3252a97be0
-
 # 基础环境
 RUN mkdir -p /usr/local/src/qcloud-tools \
     && mkdir -p /usr/local/qcloud-tools/shell \
@@ -24,7 +21,11 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
 	&& cd /usr/local/src \
 	&& tar -C /usr/local/src -xvf acme.sh.tar.gz \
 	&& cd acme.sh-master \
-	&& ./acme.sh --install --nocron
+	&& ./acme.sh --install --nocron \
+# 清理
+    && rm -rf /usr/local/src/* \
+    && yum remove -y wget \
+    && yum clean all
 
 COPY . /usr/local/src/qcloud-tools/
 
@@ -38,10 +39,7 @@ RUN cd /usr/local/src/qcloud-tools \
     && mv /usr/local/src/qcloud-tools/web /usr/local/qcloud-tools/ \
     && mv /usr/local/src/qcloud-tools/Dockerstart /start \
     && chmod +x /start \
-# 清理
-    && rm -rf /usr/local/src/* \
-    && yum remove -y wget \
-    && yum clean all
+    && rm -rf /usr/local/src/*
 
 EXPOSE 80
 

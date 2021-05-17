@@ -1,9 +1,9 @@
 db:
-  host: "localhost"
-  port: 3306
-  database: "qcloud-tools"
-  user: "db_qcloud"
-  password: "58117aec3b3252a97be0"
+  host: "#MYSQL_HOST#"
+  port: #MYSQL_PORT#
+  database: "#MYSQL_DATABASE#"
+  user: "#MYSQL_USER#"
+  password: "#MYSQL_PASSWORD#"
 log:
   name: "qcloud-tool"
   path: ""
