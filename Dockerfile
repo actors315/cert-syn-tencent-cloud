@@ -10,7 +10,7 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
     && cd /usr/local/src \
 #	&& wget https://golang.google.cn/dl/go1.16.4.linux-amd64.tar.gz \
     && wget https://studygolang.com/dl/golang/go1.16.4.linux-amd64.tar.gz \
-	&& wget -O acme.sh.tar.gz https://github.com/acmesh-official/acme.sh/archive/master.tar.gz \
+    && wget -O acme.sh.tar.gz https://github.com/acmesh-official/acme.sh/archive/master.tar.gz \
 # 安装 GO
 	&& cd /usr/local/src \
 	&& tar -C /usr/local -xvf go1.16.4.linux-amd64.tar.gz \
