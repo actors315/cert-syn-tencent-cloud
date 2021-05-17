@@ -1,8 +1,8 @@
 db:
-  host: "#MYSQL_HOST#"
+  host: "#MYSQL_IP#"
   port: #MYSQL_PORT#
   database: "#MYSQL_DATABASE#"
-  user: "#MYSQL_USER#"
+  user: "#MYSQL_USERNAME#"
   password: "#MYSQL_PASSWORD#"
 log:
   name: "qcloud-tool"

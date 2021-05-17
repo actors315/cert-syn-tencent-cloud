@@ -13,9 +13,10 @@
         "inputs": {
           "serviceName": "qcloud-tools",
           "servicePath": "/qcloud-tools",
+          "mode": "high-availability",
           "containerPort": 80,
-          "containerOptions": {
-            "MYSQL_HOST": "{{env.MYSQL_HOST}}",
+          "envVariables": {
+            "MYSQL_IP": "{{env.MYSQL_IP}}",
             "MYSQL_PASSWORD": "{{env.MYSQL_PASSWORD}}"
           }
         }

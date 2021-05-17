@@ -2,10 +2,10 @@
 
 . ~/.bashrc
 
-sed -i -r "s/#MYSQL_HOST#/${MYSQL_HOST:-localhost}/g" /usr/local/qcloud-tools/config/config.yaml
+sed -i -r "s/#MYSQL_IP#/${MYSQL_IP:-localhost}/g" /usr/local/qcloud-tools/config/config.yaml
 sed -i -r "s/#MYSQL_PORT#/${MYSQL_PORT:-3306}/g" /usr/local/qcloud-tools/config/config.yaml
 sed -i -r "s/#MYSQL_DATABASE#/${MYSQL_DATABASE:-qcloud-tools}/g" /usr/local/qcloud-tools/config/config.yaml
-sed -i -r "s/#MYSQL_USER#/${MYSQL_USER:-db_qcloud}/g" /usr/local/qcloud-tools/config/config.yaml
+sed -i -r "s/#MYSQL_USERNAME#/${MYSQL_USERNAME:-db_qcloud}/g" /usr/local/qcloud-tools/config/config.yaml
 sed -i -r "s/#MYSQL_PASSWORD#/${MYSQL_PASSWORD:-58117aec3b3252a97be0}/g" /usr/local/qcloud-tools/config/config.yaml
 
 cd /usr/local/qcloud-tools/
