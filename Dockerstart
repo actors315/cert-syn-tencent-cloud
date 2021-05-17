@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+. ~/.bashrc
+
 sed -i -r "s/#MYSQL_HOST#/${MYSQL_HOST:-localhost}/g" /usr/local/qcloud-tools/config/config.yaml
 sed -i -r "s/#MYSQL_PORT#/${MYSQL_PORT:-3306}/g" /usr/local/qcloud-tools/config/config.yaml
 sed -i -r "s/#MYSQL_DATABASE#/${MYSQL_DATABASE:-qcloud-tools}/g" /usr/local/qcloud-tools/config/config.yaml

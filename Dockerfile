@@ -13,10 +13,10 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
 # 安装 GO
 	&& cd /usr/local/src \
 	&& tar -C /usr/local -xvf go1.16.4.linux-amd64.tar.gz \
-	&& echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc \
-	&& echo 'export GOROOT=/usr/local/go' >> ~/.bashrc \
-	&& echo 'export GOPATH=/data/go' >> ~/.bashrc \
-	&& echo 'export GOPROXY=https://mirrors.cloud.tencent.com/go/' >> ~/.bashrc \
+	&& echo 'export PATH=/usr/local/go/bin:$PATH' >> /etc/bashrc \
+	&& echo 'export GOROOT=/usr/local/go' >> /etc/bashrc \
+	&& echo 'export GOPATH=/data/go' >> /etc/bashrc \
+	&& echo 'export GOPROXY=https://mirrors.cloud.tencent.com/go/' >> /etc/bashrc \
 # 安装 acme.sh
 	&& cd /usr/local/src \
 	&& tar -C /usr/local/src -xvf acme.sh.tar.gz \
@@ -29,7 +29,7 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
 COPY . /usr/local/src/qcloud-tools/
 
 # 安装 qcloud-tools
-RUN cd /usr/local/src/qcloud-tools \
+RUN . ~/.bashrc && cd /usr/local/src/qcloud-tools \
 	&& make clean && make cert-monitor \
 	&& mv /usr/local/src/qcloud-tools/bin/* /usr/local/qcloud-tools/ \
 # 配置
