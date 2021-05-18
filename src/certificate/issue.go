@@ -70,6 +70,9 @@ func (issue *Issue) IssueCertByScript(rowId uint64) {
 	var privateKeyPath, publicKeyPath string
 
 	content := string(stdout)
+
+	fmt.Println("issue result", content)
+
 	privateKeyRegexp, _ := regexp.Compile(`Your cert key is in  (.*\/\.acme\.sh\/.*[\S])`)
 	publicKeyRegexp, _ := regexp.Compile(`And the full chain certs is there:  (.*\/\.acme\.sh\/.*[\S])`)
 
