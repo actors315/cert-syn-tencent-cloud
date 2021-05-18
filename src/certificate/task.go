@@ -10,7 +10,7 @@ import (
 
 func TickerSchedule() {
 
-	ticker := time.NewTicker(time.Duration(86400) * time.Second)
+	ticker := time.NewTicker(time.Duration(600) * time.Second)
 	for {
 		select {
 		case <-ticker.C:

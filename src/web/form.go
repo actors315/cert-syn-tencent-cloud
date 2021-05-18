@@ -145,7 +145,7 @@ func (form IssueForm) Add() (err error) {
 	sqlStr := `INSERT INTO issue_info (
 secret_id,secret_key,dns_api,app_id,app_id_value,app_key,app_key_value,type,main_domain,extra_domain
 ) VALUES (?,?,?,?,?,?,?,?,?,?)`
-	lastInsertId, err := db.QcloudToolDb.Insert(sqlStr,
+	_, err = db.QcloudToolDb.Insert(sqlStr,
 		issue.SecretId,
 		issue.SecretKey,
 		issue.DnsApi,
@@ -159,8 +159,6 @@ secret_id,secret_key,dns_api,app_id,app_id_value,app_key,app_key_value,type,main
 	if nil != err {
 		return err
 	}
-
-	go issue.IssueCertByScript(uint64(lastInsertId))
 
 	return
 }
