@@ -91,6 +91,8 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 		issueForm.SecretKey = request.Form.Get("secret_key")
 		issueForm.CdnType = request.Form.Get("type")
 		issueForm.DnsApi = request.Form.Get("dns_api")
+		issueForm.AppId = request.Form.Get("app_id_value")
+		issueForm.AppValue = request.Form.Get("app_key_value")
 		issueForm.MainDomain = request.Form.Get("main_domain")
 		issueForm.ExtraDomain = request.Form.Get("extra_domain")
 
