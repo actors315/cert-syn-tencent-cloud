@@ -11,7 +11,7 @@ import (
 
 func TickerSchedule(ctx context.Context) {
 
-	ticker := time.NewTicker(time.Duration(600) * time.Second)
+	ticker := time.NewTicker(time.Duration(86400) * time.Second)
 	for {
 		select {
 		case <-ctx.Done():
