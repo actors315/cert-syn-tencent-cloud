@@ -1,6 +1,7 @@
 package certificate
 
 import (
+	"context"
 	"fmt"
 	"qcloud-tools/src/db"
 	"strconv"
@@ -8,11 +9,14 @@ import (
 	"time"
 )
 
-func TickerSchedule() {
+func TickerSchedule(ctx context.Context) {
 
 	ticker := time.NewTicker(time.Duration(600) * time.Second)
 	for {
 		select {
+		case <-ctx.Done():
+			fmt.Println("Ticker Schedule done:", ctx.Err())
+			return
 		case <-ticker.C:
 			go checkUpdate()
 		}

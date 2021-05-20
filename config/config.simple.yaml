@@ -7,3 +7,8 @@ db:
 log:
   name: "qcloud-tool"
   path: ""
+switch:
+  openMonitor: #OPEN_MONITOR#
+  openHttp: #OPEN_HTTP#
+http:
+  port: #HTTP_PORT#

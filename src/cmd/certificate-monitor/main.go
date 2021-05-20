@@ -1,32 +1,25 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"context"
 	"qcloud-tools/src/certificate"
-	"qcloud-tools/src/tools"
-	"qcloud-tools/src/web"
+	"qcloud-tools/src/config"
+	"qcloud-tools/src/core"
+	"time"
 )
 
 func main() {
 
-	// 开启一个定时器
-	go certificate.TickerSchedule()
-
-	rootPath := tools.GetRootPath()
-	staticPath := fmt.Sprintf("%s/web/static", rootPath)
-
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
-	http.HandleFunc("/add-domain", web.AddDomain)
-	http.HandleFunc("/list", web.GetList)
-	http.HandleFunc("/", Welcome)
-
-	if err := http.ListenAndServe(":80", nil); err != nil {
-		fmt.Println(err)
+	if !config.QcloudTool.Switch.OpenMonitor {
+		return
 	}
-}
 
-func Welcome(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(writer, "<div>Welcome ~~</div>")
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go core.SignalHandler(cancel)
+
+	// 开启一个定时器
+	certificate.TickerSchedule(ctx)
+
+	time.Sleep(time.Second * 5)
 }

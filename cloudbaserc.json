@@ -17,7 +17,10 @@
           "containerPort": 80,
           "envVariables": {
             "MYSQL_IP": "{{env.MYSQL_IP}}",
-            "MYSQL_PASSWORD": "{{env.MYSQL_PASSWORD}}"
+            "MYSQL_PASSWORD": "{{env.MYSQL_PASSWORD}}",
+            "OPEN_MONITOR": "false",
+            "OPEN_HTTP": "true",
+            "HTTP_PORT": "{{env.HTTP_PORT}}"
           }
         }
       }

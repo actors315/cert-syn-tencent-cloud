@@ -6,7 +6,7 @@ COPY . /usr/local/src/qcloud-tools/
 
 # 安装 qcloud-tools
 RUN . ~/.bashrc && cd /usr/local/src/qcloud-tools \
-    && make clean && make cert-monitor \
+    && make clean && make cert-monitor && make cert-http \
     && mv /usr/local/src/qcloud-tools/bin/* /usr/local/qcloud-tools/ \
 # 配置
     && mv /usr/local/src/qcloud-tools/config/config.simple.yaml /usr/local/qcloud-tools/config/config.yaml \
