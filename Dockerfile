@@ -12,9 +12,8 @@ RUN . ~/.bashrc && cd /usr/local/src/qcloud-tools \
     && mv /usr/local/src/qcloud-tools/config/config.simple.yaml /usr/local/qcloud-tools/config/config.yaml \
     && mv /usr/local/src/qcloud-tools/config/issue-template.tpl /usr/local/qcloud-tools/config/issue-template.tpl \
     && mv /usr/local/src/qcloud-tools/web /usr/local/qcloud-tools/ \
-
     && mv /usr/local/src/qcloud-tools/Dockerstart /start \
-    && chmod +x /start \
+    && chmod +x /start
 
 EXPOSE 80
 
