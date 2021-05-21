@@ -30,7 +30,7 @@
 
 ### 填加域名
 
-/add-domain
+/add
 
 ## Notice
 

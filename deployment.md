@@ -40,9 +40,19 @@ MYSQL_HOST=3306
 MYSQL_DATABASE=qcloud-tools
 MYSQL_USER=db_qcloud
 MYSQL_PASSWORD=58117aec3b3252a97be0
+HTTP_PORT=80
 ```
 
-### docker build -t qcloud-tools .
+### 生成镜像
+```
+docker build -t qcloud-tools .
+```
+
+### 启动
+
+```
+docker run --name my-qcloud-tools --env-file=./.env.dev -p 80:80 -d qcloud-tools:latest
+```
 
 ## 推荐使用腾讯云 CloudBase
 
