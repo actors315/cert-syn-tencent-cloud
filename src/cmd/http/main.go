@@ -10,10 +10,6 @@ import (
 
 func main() {
 
-	if !config.QcloudTool.Switch.OpenHttp {
-		return
-	}
-
 	rootPath := tools.GetRootPath()
 	staticPath := fmt.Sprintf("%s/web/static", rootPath)
 

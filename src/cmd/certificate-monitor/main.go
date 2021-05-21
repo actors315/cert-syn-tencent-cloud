@@ -3,16 +3,11 @@ package main
 import (
 	"context"
 	"qcloud-tools/src/certificate"
-	"qcloud-tools/src/config"
 	"qcloud-tools/src/core"
 	"time"
 )
 
 func main() {
-
-	if !config.QcloudTool.Switch.OpenMonitor {
-		return
-	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 

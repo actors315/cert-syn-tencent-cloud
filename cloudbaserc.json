@@ -18,8 +18,7 @@
           "envVariables": {
             "MYSQL_IP": "{{env.MYSQL_IP}}",
             "MYSQL_PASSWORD": "{{env.MYSQL_PASSWORD}}",
-            "OPEN_MONITOR": "false",
-            "OPEN_HTTP": "true",
+            "MYSQL_PORT": "{{env.MYSQL_PORT}}",
             "HTTP_PORT": "{{env.HTTP_PORT}}"
           }
         }
