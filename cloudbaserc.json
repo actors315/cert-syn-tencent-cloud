@@ -15,6 +15,7 @@
           "servicePath": "/qcloud-tools",
           "mode": "high-availability",
           "containerPort": 80,
+          "dockerfilePath": "./Dockerfile.web",
           "envVariables": {
             "MYSQL_IP": "{{env.MYSQL_IP}}",
             "MYSQL_PASSWORD": "{{env.MYSQL_PASSWORD}}",
