@@ -115,7 +115,7 @@ func (issue *Issue) IssueCertByScript() bool {
 		extraDomain := strings.Split(issue.ExtraDomain, "-d ")
 		for _, value := range extraDomain {
 			if value != "" {
-				history.IssueDomain = value
+				history.IssueDomain = strings.TrimSpace(value)
 				history.Add()
 			}
 		}

@@ -7,4 +7,4 @@ export {{.AppKeyName}}="{{.AppKeyValue}}"
 
 acme.sh --upgrade
 
-acme.sh --issue --dns {{.DnsApi}} -d {{.MainDomain}} {{.ExtraDomain}}
+acme.sh --register-account -m admin@lingyin99.cn --issue --dns {{.DnsApi}} -d {{.MainDomain}} {{.ExtraDomain}}
