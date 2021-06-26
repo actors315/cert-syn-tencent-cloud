@@ -53,7 +53,3 @@ docker build -t qcloud-tools .
 ```
 docker run --name my-qcloud-tools --env-file=./.env.dev -p 80:80 -d qcloud-tools:latest
 ```
-
-## 推荐使用腾讯云 CloudBase
-
-[![](https://main.qcloudimg.com/raw/67f5a389f1ac6f3b4d04c7256438e44f.svg)](https://console.cloud.tencent.com/tcb/env/index?action=CreateAndDeployCloudBaseProject&appUrl=https%3A%2F%2Fgithub.com%2Factors315%2Fqcloud-tools&branch=master)

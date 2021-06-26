@@ -3,25 +3,27 @@ package certificate
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"qcloud-tools/src/db"
 	"qcloud-tools/src/tools"
 	"regexp"
+	"strings"
 	"time"
 )
 
 type Issue struct {
-	SecretId      string
-	SecretKey     string
-	AppIdName     string
-	AppIdValue    string
-	AppKeyName    string
-	AppKeyValue   string
-	DnsApi        string
-	CdnType       string `default:"cdn"`
-	MainDomain    string
-	ExtraDomain   string
+	SecretId    string
+	SecretKey   string
+	AppIdName   string
+	AppIdValue  string
+	AppKeyName  string
+	AppKeyValue string
+	DnsApi      string
+	CdnType     string `default:"cdn"`
+	MainDomain  string
+	ExtraDomain string
 }
 
 func (issue *Issue) GenerateScript() (string, error) {
@@ -57,15 +59,14 @@ func (issue *Issue) GenerateScript() (string, error) {
 	return fileName, nil
 }
 
-func (issue *Issue) IssueCertByScript(rowId uint64) {
+func (issue *Issue) IssueCertByScript() bool {
 	fileName, err := issue.GenerateScript()
 	if err != nil {
-		return
+		return false
 	}
 
 	command := exec.Command(fileName)
 	stdout, _ := command.Output()
-	command.Wait()
 
 	var privateKeyPath, publicKeyPath string
 
@@ -88,7 +89,36 @@ func (issue *Issue) IssueCertByScript(rowId uint64) {
 
 	if "" == privateKeyPath || "" == publicKeyPath {
 		fmt.Printf("update certificate failed,private %s, public %s \n", privateKeyPath, publicKeyPath)
-		return
+		return false
+	}
+
+	publicData, _ := ioutil.ReadFile(publicKeyPath)
+	privateData, _ := ioutil.ReadFile(privateKeyPath)
+
+	publicKeyData := strings.TrimSpace(string(publicData))
+	publicKeyData = strings.ReplaceAll(publicKeyData, "\n", "\\n")
+
+	privateKeyData := strings.TrimSpace(string(privateData))
+	privateKeyData = strings.ReplaceAll(privateKeyData, "\n", "\\n")
+
+	now := uint(time.Now().Unix())
+
+	history := IssueHistory{
+		IssueDomain: issue.MainDomain,
+		PublicKey:   publicKeyData,
+		PrivateKey:  privateKeyData,
+		CreatedAt:   now,
+	}
+	history.Add()
+
+	if "" != issue.ExtraDomain {
+		extraDomain := strings.Split(issue.ExtraDomain, "-d ")
+		for _, value := range extraDomain {
+			if value != "" {
+				history.IssueDomain = value
+				history.Add()
+			}
+		}
 	}
 
 	// 更新证书到 cdn 或者 ecdn
@@ -97,8 +127,8 @@ func (issue *Issue) IssueCertByScript(rowId uint64) {
 		SecretId:       issue.SecretId,
 		SecretKey:      issue.SecretKey,
 		Domain:         issue.MainDomain,
-		privateKeyPath: privateKeyPath,
-		publicKeyPath:  publicKeyPath,
+		PrivateKeyData: privateKeyData,
+		PublicKeyData:  publicKeyData,
 	}
 
 	switch issue.CdnType {
@@ -108,11 +138,47 @@ func (issue *Issue) IssueCertByScript(rowId uint64) {
 		syncInstance = CdnSync{sync}
 	}
 
-	result := syncInstance.UpdateCredential()
+	return syncInstance.UpdateCredential()
+}
+
+func (issue *Issue) IssueCertByHistory() (bool, uint) {
+
+	history := GetLatestValidRecord(issue.MainDomain)
+	if "" == history.PublicKey {
+		return false, 0
+	}
+
+	// 更新证书到 cdn 或者 ecdn
+	var syncInstance ISync
+	sync := Sync{
+		SecretId:       issue.SecretId,
+		SecretKey:      issue.SecretKey,
+		Domain:         issue.MainDomain,
+		PrivateKeyData: history.PrivateKey,
+		PublicKeyData:  history.PublicKey,
+	}
+
+	switch issue.CdnType {
+	case "ecdn":
+		syncInstance = EcdnSync{sync}
+	default:
+		syncInstance = CdnSync{sync}
+	}
+
+	return syncInstance.UpdateCredential(), history.CreatedAt
+}
+
+func (issue *Issue) IssueCert(rowId uint64) {
+
+	result, now := issue.IssueCertByHistory()
+
+	if !result {
+		result = issue.IssueCertByScript()
+		now = uint(time.Now().Unix())
+	}
 
 	// 更新数据库信息
 	if result && rowId > 0 {
-		now := time.Now().Unix()
 		sqlStr := "UPDATE issue_info SET last_issue_time = ? WHERE id = ?"
 		_, _ = db.QcloudToolDb.Update(sqlStr, now, rowId)
 	}

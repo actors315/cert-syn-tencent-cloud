@@ -19,6 +19,8 @@ func TickerSchedule(ctx context.Context) {
 			return
 		case <-ticker.C:
 			go checkUpdate()
+		default:
+			time.Sleep(time.Duration(300) * time.Second)
 		}
 	}
 }
@@ -59,7 +61,7 @@ func checkUpdate() {
 		}
 		rowIdArr = append(rowIdArr, strconv.FormatUint(rowId, 10))
 
-		issue.IssueCertByScript(rowId)
+		issue.IssueCert(rowId)
 	}
 
 	if nil != rowIdArr {

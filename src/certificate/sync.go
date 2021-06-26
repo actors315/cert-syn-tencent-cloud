@@ -7,8 +7,6 @@ import (
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	ecdn "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ecdn/v20191012"
-	"io/ioutil"
-	"strings"
 	"time"
 )
 
@@ -22,8 +20,8 @@ type Sync struct {
 	SecretId       string
 	SecretKey      string
 	Domain         string
-	privateKeyPath string
-	publicKeyPath  string
+	PrivateKeyData string
+	PublicKeyData  string
 }
 
 func (sync Sync) GetCredential() (*common.Credential, *profile.ClientProfile) {
@@ -38,17 +36,9 @@ func (sync Sync) GetCredential() (*common.Credential, *profile.ClientProfile) {
 }
 
 func (sync Sync) GetCertRequestParam() (params string) {
-	publicData, _ := ioutil.ReadFile(sync.publicKeyPath)
-	privateData, _ := ioutil.ReadFile(sync.privateKeyPath)
-
-	publicKeyData := strings.TrimSpace(string(publicData))
-	publicKeyData = strings.ReplaceAll(publicKeyData, "\n", "\\n")
-
-	privateKeyData := strings.TrimSpace(string(privateData))
-	privateKeyData = strings.ReplaceAll(privateKeyData, "\n", "\\n")
 
 	params = "{\"Domain\":\"%s\",\"Https\":{\"Switch\":\"on\",\"Http2\":\"on\",\"CertInfo\":{\"Certificate\":\"%s\",\"PrivateKey\":\"%s\",\"Message\":\"%s\"}}}"
-	params = fmt.Sprintf(params, sync.Domain, publicKeyData, privateKeyData, time.Now().Format("2006-01-02"))
+	params = fmt.Sprintf(params, sync.Domain, sync.PublicKeyData, sync.PrivateKeyData, time.Now().Format("2006-01-02"))
 
 	return
 }
@@ -70,6 +60,13 @@ func (sync CdnSync) UpdateCredential() bool {
 	if err != nil {
 		panic(err)
 	}
+
+	request.ForceRedirect = &cdn.ForceRedirect{
+		Switch:             common.StringPtr("on"),
+		RedirectType:       common.StringPtr("https"),
+		RedirectStatusCode: common.Int64Ptr(301),
+	}
+
 	response, err := client.UpdateDomainConfig(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
 		fmt.Printf("An API error has returned: %s", err)
@@ -100,6 +97,13 @@ func (sync EcdnSync) UpdateCredential() bool {
 	if err != nil {
 		panic(err)
 	}
+
+	request.ForceRedirect = &ecdn.ForceRedirect{
+		Switch:             common.StringPtr("on"),
+		RedirectType:       common.StringPtr("https"),
+		RedirectStatusCode: common.Int64Ptr(301),
+	}
+
 	response, err := client.UpdateDomainConfig(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
 		fmt.Println("An API error has returned: ", err)
