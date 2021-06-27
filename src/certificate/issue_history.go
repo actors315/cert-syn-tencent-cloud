@@ -16,7 +16,7 @@ type IssueHistory struct {
 
 func GetLatestValidRecord(domain string) (history IssueHistory) {
 
-	sqlStr := "SELECT issue_domain,public_key,private_key,created_at FROM issue_history WHERE issue_domain in (?) AND created_at > ? ORDER BY id DESC LIMIT 1"
+	sqlStr := "SELECT issue_domain,public_key,private_key,created_at FROM issue_history WHERE issue_domain in ('%s') AND created_at > %d ORDER BY id DESC LIMIT 1"
 	now := time.Now().Unix()
 
 	var arr []string
@@ -28,7 +28,9 @@ func GetLatestValidRecord(domain string) (history IssueHistory) {
 
 	domain = strings.Join(arr, "','")
 
-	rows, err := db.QcloudToolDb.Query(sqlStr, "'"+domain+"'", now-86400*62)
+	sqlStr = fmt.Sprintf(sqlStr,domain,now-86400*62)
+
+	rows, err := db.QcloudToolDb.Query(sqlStr)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -37,10 +39,10 @@ func GetLatestValidRecord(domain string) (history IssueHistory) {
 
 	for rows.Next() {
 		err = rows.Scan(
-			history.IssueDomain,
-			history.PublicKey,
-			history.PrivateKey,
-			history.CreatedAt)
+			&history.IssueDomain,
+			&history.PublicKey,
+			&history.PrivateKey,
+			&history.CreatedAt)
 
 		if err != nil {
 			fmt.Println(err)
