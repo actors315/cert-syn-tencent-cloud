@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"strings"
+	"time"
 )
 
 type Conn struct {
@@ -10,11 +12,15 @@ type Conn struct {
 	Db  *sql.DB
 }
 
+const tryAgainError = "try connecting again"
+
+const maxBadConnRetries = 2
+
 var QcloudToolDb Conn
 
 func (conn Conn) Update(sqlStr string, args ...interface{}) (affected int64, err error) {
 
-	stmt, err := conn.Db.Prepare(sqlStr)
+	stmt, err := conn.Prepare(sqlStr)
 	if nil != err {
 		fmt.Println("failed to prepare query", err)
 		return 0, err
@@ -32,7 +38,8 @@ func (conn Conn) Update(sqlStr string, args ...interface{}) (affected int64, err
 }
 
 func (conn Conn) Insert(sqlStr string, args ...interface{}) (lastInsertId int64, err error) {
-	stmt, err := conn.Db.Prepare(sqlStr)
+
+	stmt, err := conn.Prepare(sqlStr)
 	if nil != err {
 		fmt.Println("failed to prepare query", err)
 		return 0, err
@@ -50,8 +57,8 @@ func (conn Conn) Insert(sqlStr string, args ...interface{}) (lastInsertId int64,
 }
 
 func (conn Conn) Query(sqlStr string, args ...interface{}) (rows *sql.Rows, err error) {
-	var db = QcloudToolDb.Db
-	stmt, err := db.Prepare(sqlStr)
+
+	stmt, err := conn.Prepare(sqlStr)
 	if nil != err {
 		fmt.Println("failed to prepare query:", err)
 		return
@@ -62,6 +69,19 @@ func (conn Conn) Query(sqlStr string, args ...interface{}) (rows *sql.Rows, err 
 	if nil != err {
 		fmt.Println("failed to query data:", err)
 		return
+	}
+
+	return
+}
+
+func (conn Conn) Prepare(sql string) (stmt *sql.Stmt, err error) {
+
+	for i := 0; i < maxBadConnRetries; i++ {
+		stmt, err = QcloudToolDb.Db.Prepare(sql)
+		if err == nil || !strings.Contains(err.Error(), tryAgainError){
+			break
+		}
+		time.Sleep(time.Duration(5) * time.Second)
 	}
 
 	return
