@@ -14,8 +14,6 @@ type IssueHistory struct {
 	CreatedAt   uint
 }
 
-
-
 func (history IssueHistory) Add() {
 	sql := "INSERT INTO issue_history (issue_domain,public_key,private_key,created_at) values (?, ?, ?, ?)"
 	_, _ = db.QcloudToolDb.Insert(sql,
@@ -39,7 +37,7 @@ func GetLatestValidRecord(domain string) (history IssueHistory) {
 
 	domain = strings.Join(arr, "','")
 
-	sqlStr = fmt.Sprintf(sqlStr,domain,now-86400*62)
+	sqlStr = fmt.Sprintf(sqlStr, domain, now-86400*62)
 
 	rows, err := db.QcloudToolDb.Query(sqlStr)
 	if err != nil {
@@ -66,7 +64,7 @@ func GetLatestValidRecord(domain string) (history IssueHistory) {
 func GetIssueInfoById(id uint64) (info IssueInfo) {
 	sqlStr := "SELECT id,dns_api,app_id,app_id_value,app_key,app_key_value,main_domain,extra_domain FROM issue_info WHERE id = ? LIMIT 1"
 
-	rows, err := db.QcloudToolDb.Query(sqlStr)
+	rows, err := db.QcloudToolDb.Query(sqlStr, id)
 	if err != nil {
 		fmt.Println(err)
 		return
