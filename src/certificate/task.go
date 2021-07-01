@@ -28,8 +28,8 @@ func TickerSchedule(ctx context.Context) {
 func checkUpdate() {
 
 	var err error
-	fields := "id,secret_id,secret_key,app_id,app_id_value,app_key,app_key_value,dns_api,type,cdn_domain,main_domain,extra_domain FROM issue_info"
-	sqlStr := fmt.Sprintf("SELECT %s WHERE last_issue_time < ? AND last_check_time < ?", fields)
+	fields := "id,secret_id,secret_key,type,cdn_domain,issue_id"
+	sqlStr := fmt.Sprintf("SELECT %s FROM issue_sync WHERE last_issue_time < ? AND last_check_time < ?", fields)
 	now := time.Now().Unix()
 
 	rows, err := db.QcloudToolDb.Query(sqlStr, now-31*86400, now-86400)
@@ -41,28 +41,21 @@ func checkUpdate() {
 	var rowIdArr []string
 
 	for rows.Next() {
-		var issue Issue
-		var rowId uint64
+		var issue IssueSync
 		err = rows.Scan(
-			&rowId,
+			&issue.Id,
 			&issue.SecretId,
 			&issue.SecretKey,
-			&issue.AppIdName,
-			&issue.AppIdValue,
-			&issue.AppKeyName,
-			&issue.AppKeyValue,
-			&issue.DnsApi,
 			&issue.CdnType,
 			&issue.CdnDomain,
-			&issue.MainDomain,
-			&issue.ExtraDomain)
+			&issue.IssueId)
 		if nil != err {
 			fmt.Println("scan row error:", err)
 			continue
 		}
-		rowIdArr = append(rowIdArr, strconv.FormatUint(rowId, 10))
+		rowIdArr = append(rowIdArr, strconv.FormatUint(issue.Id, 10))
 
-		issue.IssueCert(rowId)
+		issue.IssueCert()
 	}
 
 	if nil != rowIdArr {

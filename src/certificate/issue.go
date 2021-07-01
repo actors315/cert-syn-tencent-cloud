@@ -13,6 +13,24 @@ import (
 	"time"
 )
 
+type IssueSync struct {
+	Id                           uint64
+	SecretId, SecretKey          string
+	CdnType                      string `default:"cdn"`
+	CdnDomain                    string
+	IssueId                      uint64
+	LastIssueTime, LastCheckTime uint
+}
+
+type IssueInfo struct {
+	Id                      uint64
+	DnsApi                  string
+	AppIdName, AppIdValue   string
+	AppKeyName, AppKeyValue string
+	MainDomain, ExtraDomain string
+}
+
+/*废弃*/
 type Issue struct {
 	SecretId    string
 	SecretKey   string
@@ -22,16 +40,16 @@ type Issue struct {
 	AppKeyValue string
 	DnsApi      string
 	CdnType     string `default:"cdn"`
-	CdnDomain 	string
+	CdnDomain   string
 	MainDomain  string
 	ExtraDomain string
 }
 
-func (issue *Issue) GenerateScript() (string, error) {
+func (info *IssueInfo) GenerateScript() (string, error) {
 
 	rootPath := tools.GetRootPath()
 
-	fileName := fmt.Sprintf("%s/shell/%s.sh", rootPath, issue.MainDomain)
+	fileName := fmt.Sprintf("%s/shell/%s.sh", rootPath, info.MainDomain)
 	f, err := os.Create(fileName)
 	defer f.Close()
 
@@ -47,7 +65,7 @@ func (issue *Issue) GenerateScript() (string, error) {
 		return "", err
 	}
 
-	if err := tpl.Execute(f, issue); err != nil {
+	if err := tpl.Execute(f, info); err != nil {
 		fmt.Printf("生成脚本失败：%s \n", err)
 		return "", err
 	}
@@ -60,8 +78,11 @@ func (issue *Issue) GenerateScript() (string, error) {
 	return fileName, nil
 }
 
-func (issue *Issue) IssueCertByScript() bool {
-	fileName, err := issue.GenerateScript()
+func (issue *IssueSync) IssueCertByScript() bool {
+
+	info := GetIssueInfoById(issue.IssueId)
+
+	fileName, err := info.GenerateScript()
 	if err != nil {
 		return false
 	}
@@ -105,15 +126,15 @@ func (issue *Issue) IssueCertByScript() bool {
 	now := uint(time.Now().Unix())
 
 	history := IssueHistory{
-		IssueDomain: issue.MainDomain,
+		IssueDomain: info.MainDomain,
 		PublicKey:   publicKeyData,
 		PrivateKey:  privateKeyData,
 		CreatedAt:   now,
 	}
 	history.Add()
 
-	if "" != issue.ExtraDomain {
-		extraDomain := strings.Split(issue.ExtraDomain, "-d ")
+	if "" != info.ExtraDomain {
+		extraDomain := strings.Split(info.ExtraDomain, "-d ")
 		for _, value := range extraDomain {
 			value = strings.TrimSpace(value)
 			if value != "" {
@@ -143,9 +164,9 @@ func (issue *Issue) IssueCertByScript() bool {
 	return syncInstance.UpdateCredential()
 }
 
-func (issue *Issue) IssueCertByHistory() (bool, uint) {
+func (issue *IssueSync) IssueCertByHistory() (bool, uint) {
 
-	history := GetLatestValidRecord(issue.MainDomain)
+	history := GetLatestValidRecord(issue.CdnDomain)
 	if "" == history.PublicKey {
 		return false, 0
 	}
@@ -170,7 +191,7 @@ func (issue *Issue) IssueCertByHistory() (bool, uint) {
 	return syncInstance.UpdateCredential(), history.CreatedAt
 }
 
-func (issue *Issue) IssueCert(rowId uint64) {
+func (issue *IssueSync) IssueCert() {
 
 	result, now := issue.IssueCertByHistory()
 
@@ -180,8 +201,8 @@ func (issue *Issue) IssueCert(rowId uint64) {
 	}
 
 	// 更新数据库信息
-	if result && rowId > 0 {
+	if result && issue.Id > 0 {
 		sqlStr := "UPDATE issue_info SET last_issue_time = ? WHERE id = ?"
-		_, _ = db.QcloudToolDb.Update(sqlStr, now, rowId)
+		_, _ = db.QcloudToolDb.Update(sqlStr, now, issue.Id)
 	}
 }
