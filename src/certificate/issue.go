@@ -202,7 +202,7 @@ func (issue *IssueSync) IssueCert() {
 
 	// 更新数据库信息
 	if result && issue.Id > 0 {
-		sqlStr := "UPDATE issue_info SET last_issue_time = ? WHERE id = ?"
+		sqlStr := "UPDATE issue_sync SET last_issue_time = ? WHERE id = ?"
 		_, _ = db.QcloudToolDb.Update(sqlStr, now, issue.Id)
 	}
 }
