@@ -28,7 +28,7 @@ func TickerSchedule(ctx context.Context) {
 func checkUpdate() {
 
 	var err error
-	fields := "id,secret_id,secret_key,app_id,app_id_value,app_key,app_key_value,dns_api,type,main_domain,extra_domain FROM issue_info"
+	fields := "id,secret_id,secret_key,app_id,app_id_value,app_key,app_key_value,dns_api,type,cdn_domain,main_domain,extra_domain FROM issue_info"
 	sqlStr := fmt.Sprintf("SELECT %s WHERE last_issue_time < ? AND last_check_time < ?", fields)
 	now := time.Now().Unix()
 
@@ -53,6 +53,7 @@ func checkUpdate() {
 			&issue.AppKeyValue,
 			&issue.DnsApi,
 			&issue.CdnType,
+			&issue.CdnDomain,
 			&issue.MainDomain,
 			&issue.ExtraDomain)
 		if nil != err {

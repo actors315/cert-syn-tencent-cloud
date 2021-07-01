@@ -22,6 +22,7 @@ type Issue struct {
 	AppKeyValue string
 	DnsApi      string
 	CdnType     string `default:"cdn"`
+	CdnDomain 	string
 	MainDomain  string
 	ExtraDomain string
 }
@@ -114,8 +115,9 @@ func (issue *Issue) IssueCertByScript() bool {
 	if "" != issue.ExtraDomain {
 		extraDomain := strings.Split(issue.ExtraDomain, "-d ")
 		for _, value := range extraDomain {
+			value = strings.TrimSpace(value)
 			if value != "" {
-				history.IssueDomain = strings.TrimSpace(value)
+				history.IssueDomain = value
 				history.Add()
 			}
 		}
@@ -126,7 +128,7 @@ func (issue *Issue) IssueCertByScript() bool {
 	sync := Sync{
 		SecretId:       issue.SecretId,
 		SecretKey:      issue.SecretKey,
-		Domain:         issue.MainDomain,
+		Domain:         issue.CdnDomain,
 		PrivateKeyData: privateKeyData,
 		PublicKeyData:  publicKeyData,
 	}
@@ -153,7 +155,7 @@ func (issue *Issue) IssueCertByHistory() (bool, uint) {
 	sync := Sync{
 		SecretId:       issue.SecretId,
 		SecretKey:      issue.SecretKey,
-		Domain:         issue.MainDomain,
+		Domain:         issue.CdnDomain,
 		PrivateKeyData: history.PrivateKey,
 		PublicKeyData:  history.PublicKey,
 	}
