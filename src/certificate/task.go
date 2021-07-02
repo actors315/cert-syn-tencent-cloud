@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"qcloud-tools/src/db"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -38,7 +37,7 @@ func checkUpdate() {
 	}
 	defer rows.Close()
 
-	var rowIdArr []string
+	var rowIdArr []interface{}
 
 	for rows.Next() {
 		var issue IssueSync
@@ -53,14 +52,14 @@ func checkUpdate() {
 			fmt.Println("scan row error:", err)
 			continue
 		}
-		rowIdArr = append(rowIdArr, strconv.FormatUint(issue.Id, 10))
+		rowIdArr = append(rowIdArr, issue.Id)
 
 		issue.IssueCert()
 	}
 
 	if nil != rowIdArr {
-		sqlStr := "UPDATE issue_sync SET last_check_time = ? WHERE id IN (?)"
-		_, _ = db.QcloudToolDb.Update(sqlStr, now, strings.Join(rowIdArr, ","))
+		sqlStr := fmt.Sprintf("UPDATE issue_sync SET last_check_time = %d WHERE id IN (%s?)", now, strings.Repeat("?, ", len(rowIdArr)-1))
+		_, _ = db.QcloudToolDb.Update(sqlStr, rowIdArr...)
 	}
 
 	fmt.Println("check update done")
