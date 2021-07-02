@@ -18,6 +18,24 @@ const maxBadConnRetries = 2
 
 var QcloudToolDb Conn
 
+func (conn Conn) Delete(sqlStr string, args ...interface{}) (affected int64, err error) {
+	stmt, err := conn.Prepare(sqlStr)
+	if nil != err {
+		fmt.Println("failed to prepare query", err)
+		return 0, err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(args...)
+	if nil != err {
+		fmt.Println("failed to exec query", err)
+		return 0, err
+	}
+
+	affected, err = result.RowsAffected()
+	return
+}
+
 func (conn Conn) Update(sqlStr string, args ...interface{}) (affected int64, err error) {
 
 	stmt, err := conn.Prepare(sqlStr)

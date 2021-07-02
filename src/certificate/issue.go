@@ -18,7 +18,7 @@ type IssueSync struct {
 	SecretId, SecretKey          string
 	CdnType                      string `default:"cdn"`
 	CdnDomain                    string
-	IssueId                      uint64
+	IssueId                      uint64 `default:"0"`
 	LastIssueTime, LastCheckTime uint
 }
 
@@ -43,6 +43,21 @@ type Issue struct {
 	CdnDomain   string
 	MainDomain  string
 	ExtraDomain string
+}
+
+func (info *IssueInfo) Add() (err error) {
+
+	sql := "INSERT INTO issue_info (dns_api,app_id,app_id_value,app_key,app_key_value,main_domain,extra_domain) values (?, ?, ?, ?, ?, ?, ?)"
+	_, err = db.QcloudToolDb.Insert(sql,
+		info.DnsApi,
+		info.AppIdName,
+		info.AppIdValue,
+		info.AppKeyName,
+		info.AppKeyValue,
+		info.MainDomain,
+		info.ExtraDomain)
+
+	return err
 }
 
 func (info *IssueInfo) GenerateScript() (string, error) {
@@ -76,6 +91,18 @@ func (info *IssueInfo) GenerateScript() (string, error) {
 	}
 
 	return fileName, nil
+}
+
+func (issue *IssueSync) Add() (err error) {
+	sql := "INSERT INTO issue_sync (secret_id,secret_key,type,cdn_domain,issue_id) values (?, ?, ?, ?, ?)"
+	_, err = db.QcloudToolDb.Insert(sql,
+		issue.SecretId,
+		issue.SecretKey,
+		issue.CdnType,
+		issue.CdnDomain,
+		issue.IssueId)
+
+	return err
 }
 
 func (issue *IssueSync) IssueCertByScript() bool {

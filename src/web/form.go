@@ -120,6 +120,14 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 	_ = tpl.Execute(writer, form)
 }
 
+func AddSync(writer http.ResponseWriter, request *http.Request)  {
+
+}
+
+func CheckLogin(writer http.ResponseWriter, request *http.Request)  {
+	
+}
+
 func (form IssueForm) Add() (err error) {
 
 	issue := certificate.Issue{

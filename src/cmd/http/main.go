@@ -14,7 +14,9 @@ func main() {
 	staticPath := fmt.Sprintf("%s/web/static", rootPath)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
-	http.HandleFunc("/add", web.AddDomain)
+	http.HandleFunc("/login", web.CheckLogin)
+	http.HandleFunc("/sync/add", web.AddSync)
+	http.HandleFunc("/info/add", web.AddDomain)
 	http.HandleFunc("/",  web.GetList)
 
 	addr := fmt.Sprintf(":%d", config.QcloudTool.Http.Port)
