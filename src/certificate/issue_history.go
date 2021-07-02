@@ -89,3 +89,29 @@ func GetIssueInfoById(id uint64) (info IssueInfo) {
 
 	return
 }
+
+func GetIssueInfoList() (issueList []IssueInfo) {
+
+	sql := "SELECT id,main_domain,extra_domain FROM issue_info"
+	rows, err := db.QcloudToolDb.Query(sql)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var info IssueInfo
+		err = rows.Scan(
+			&info.Id,
+			&info.MainDomain,
+			&info.ExtraDomain)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		issueList = append(issueList, info)
+	}
+
+	return
+}

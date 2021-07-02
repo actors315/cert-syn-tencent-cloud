@@ -5,8 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"qcloud-tools/src/certificate"
-	"qcloud-tools/src/db"
 	"qcloud-tools/src/tools"
+	"strconv"
 )
 
 const (
@@ -19,17 +19,6 @@ type DnsApi struct {
 	Name       string
 	AppIdName  string
 	AppKeyName string
-}
-
-type IssueForm struct {
-	SecretId    string
-	SecretKey   string
-	CdnType     string
-	DnsApi      string
-	AppId       string
-	AppValue    string
-	MainDomain  string
-	ExtraDomain string
 }
 
 type CdnType struct {
@@ -86,17 +75,24 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 	if POST == request.Method {
 		_ = request.ParseForm()
 
-		var issueForm IssueForm
-		issueForm.SecretId = request.Form.Get("secret_id")
-		issueForm.SecretKey = request.Form.Get("secret_key")
-		issueForm.CdnType = request.Form.Get("type")
-		issueForm.DnsApi = request.Form.Get("dns_api")
-		issueForm.AppId = request.Form.Get("app_id_value")
-		issueForm.AppValue = request.Form.Get("app_key_value")
-		issueForm.MainDomain = request.Form.Get("main_domain")
-		issueForm.ExtraDomain = request.Form.Get("extra_domain")
+		var info certificate.IssueInfo
+		info.DnsApi = request.Form.Get("dns_api")
+		info.AppIdValue = request.Form.Get("app_id_value")
+		info.AppKeyValue = request.Form.Get("app_key_value")
+		info.MainDomain = request.Form.Get("main_domain")
+		info.ExtraDomain = request.Form.Get("extra_domain")
 
-		if err := issueForm.Add(); err != nil {
+		dnsApi, ok := DnsApiList[info.DnsApi]
+		if !ok {
+			msg := fmt.Sprintf("%s 不存在", info.DnsApi)
+			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, msg))
+			return
+		}
+
+		info.AppIdName = dnsApi.AppIdName
+		info.AppKeyName = dnsApi.AppKeyName
+
+		if err := info.Add(); err != nil {
 			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, err))
 		} else {
 			fmt.Fprintf(writer, `{"code":0}`)
@@ -106,67 +102,57 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 
 	writer.Header().Set("Content-Type", "text/html")
 	rootPath := tools.GetRootPath()
-	templatePath := fmt.Sprintf("%s/web/add.html", rootPath)
+	templatePath := fmt.Sprintf("%s/web/add-domain.html", rootPath)
 	tpl, _ := template.ParseFiles(templatePath)
 
 	var form = struct {
-		DnsApiList  map[string]DnsApi
-		CdnTypeList []CdnType
+		DnsApiList map[string]DnsApi
 	}{
 		DnsApiList,
+	}
+
+	_ = tpl.Execute(writer, form)
+}
+
+func AddSync(writer http.ResponseWriter, request *http.Request) {
+	if POST == request.Method {
+		_ = request.ParseForm()
+
+		var sync certificate.IssueSync
+
+		sync.SecretId = request.Form.Get("secret_id")
+		sync.SecretKey = request.Form.Get("secret_key")
+		sync.CdnType = request.Form.Get("type")
+		sync.CdnDomain = request.Form.Get("cdn_domain")
+		sync.IssueId, _ = strconv.ParseUint(request.Form.Get("issue_id"), 10, 64)
+
+		if err := sync.Add(); err != nil {
+			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, err))
+		} else {
+			fmt.Fprintf(writer, `{"code":0}`)
+		}
+
+		return
+	}
+
+	writer.Header().Set("Content-Type", "text/html")
+	rootPath := tools.GetRootPath()
+	templatePath := fmt.Sprintf("%s/web/add.html", rootPath)
+	tpl, _ := template.ParseFiles(templatePath)
+
+	issueList := certificate.GetIssueInfoList()
+
+	var form = struct {
+		IssueInfoList []certificate.IssueInfo
+		CdnTypeList   []CdnType
+	}{
+		issueList,
 		CdnTypeList,
 	}
 
 	_ = tpl.Execute(writer, form)
 }
 
-func AddSync(writer http.ResponseWriter, request *http.Request)  {
+func CheckLogin(writer http.ResponseWriter, request *http.Request) {
 
-}
-
-func CheckLogin(writer http.ResponseWriter, request *http.Request)  {
-	
-}
-
-func (form IssueForm) Add() (err error) {
-
-	issue := certificate.Issue{
-		SecretId:    form.SecretId,
-		SecretKey:   form.SecretKey,
-		AppIdValue:  form.AppId,
-		AppKeyValue: form.AppValue,
-		DnsApi:      form.DnsApi,
-		CdnType:     form.CdnType,
-		MainDomain:  form.MainDomain,
-		ExtraDomain: form.ExtraDomain,
-	}
-
-	dnsapi, ok := DnsApiList[form.DnsApi]
-	if !ok {
-		fmt.Printf("%s 不存在\n", form.DnsApi)
-		return err
-	}
-
-	issue.AppIdName = dnsapi.AppIdName
-	issue.AppKeyName = dnsapi.AppKeyName
-
-	sqlStr := `INSERT INTO issue_info (
-secret_id,secret_key,dns_api,app_id,app_id_value,app_key,app_key_value,type,main_domain,extra_domain
-) VALUES (?,?,?,?,?,?,?,?,?,?)`
-	_, err = db.QcloudToolDb.Insert(sqlStr,
-		issue.SecretId,
-		issue.SecretKey,
-		issue.DnsApi,
-		issue.AppIdName,
-		issue.AppIdValue,
-		issue.AppKeyName,
-		issue.AppKeyValue,
-		issue.CdnType,
-		issue.MainDomain,
-		issue.ExtraDomain)
-	if nil != err {
-		return err
-	}
-
-	return
 }

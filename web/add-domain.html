@@ -20,7 +20,7 @@
                     <div class="col-md-12">
                         <div class="box box-info">
                             <div class="box-header with-border">
-                                <h3 class="box-title">添加需求</h3>
+                                <h3 class="box-title">添加域名</h3>
                             </div>
                         </div>
                     </div>
@@ -28,36 +28,13 @@
                     <form name="AddDomain" method="post">
 
                         <div class="box-body">
-
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">SecretId</label>
-
-                                <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="secret_id" maxlength="64"
-                                               placeholder="腾讯云API密钥，SecretId">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">SecretKey</label>
-
-                                <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="secret_key" maxlength="64"
-                                               placeholder="腾讯云API密钥，SecretKey">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">CdnType</label>
+                                <label class="col-sm-3 control-label">DnsApi</label>
 
                                 <div class="col-sm-8">
                                     <div class="form-group">
-                                        <select class="form-control" name="type">
-                                            {{range .CdnTypeList}}
+                                        <select class="form-control" name="dns_api">
+                                            {{range .DnsApiList}}
                                                 <option value="{{.Id}}">{{.Name}}</option>
                                             {{end}}
                                         </select>
@@ -66,27 +43,45 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">加速域名</label>
+                                <label class="col-sm-3 control-label">AppId</label>
 
                                 <div class="col-sm-8">
                                     <div class="form-group required">
-                                        <input type="text" class="form-control" name="cdn_domain" maxlength="256"
-                                               placeholder="加速域名">
+                                        <input type="text" class="form-control" name="app_id_value" maxlength="64"
+                                               placeholder="域名DNS产商 AppId">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">选择证书</label>
+                                <label class="col-sm-3 control-label">AppKey</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group">
-                                        <select class="form-control" name="issue_id">
-                                            <option value="0">请选择</option>
-                                            {{range .IssueInfoList}}
-                                                <option value="{{.Id}}" title="{{.ExtraDomain}}">{{.MainDomain}}</option>
-                                            {{end}}
-                                        </select>
+                                    <div class="form-group required">
+                                        <input type="text" class="form-control" name="app_key_value" maxlength="64"
+                                               placeholder="域名DNS产商 AppKey">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">主域名</label>
+
+                                <div class="col-sm-8">
+                                    <div class="form-group required">
+                                        <input type="text" class="form-control" name="main_domain" maxlength="256"
+                                               placeholder="主域名">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">子域名合集</label>
+
+                                <div class="col-sm-8">
+                                    <div class="form-group required">
+                                        <input type="text" class="form-control" name="extra_domain" maxlength="1024"
+                                               placeholder="子域名合集,域名前面加-d,如 -d *.abc.com">
                                     </div>
                                 </div>
                             </div>
