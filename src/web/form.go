@@ -85,7 +85,7 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 		dnsApi, ok := DnsApiList[info.DnsApi]
 		if !ok {
 			msg := fmt.Sprintf("%s 不存在", info.DnsApi)
-			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, msg))
+			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":"%s"}`, msg))
 			return
 		}
 
@@ -93,7 +93,7 @@ func AddDomain(writer http.ResponseWriter, request *http.Request) {
 		info.AppKeyName = dnsApi.AppKeyName
 
 		if err := info.Add(); err != nil {
-			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, err))
+			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":"%s"}`, err))
 		} else {
 			fmt.Fprintf(writer, `{"code":0}`)
 		}
@@ -127,7 +127,7 @@ func AddSync(writer http.ResponseWriter, request *http.Request) {
 		sync.IssueId, _ = strconv.ParseUint(request.Form.Get("issue_id"), 10, 64)
 
 		if err := sync.Add(); err != nil {
-			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":%s}`, err))
+			fmt.Fprintf(writer, fmt.Sprintf(`{"code":1,"msg":"%s"}`, err))
 		} else {
 			fmt.Fprintf(writer, `{"code":0}`)
 		}

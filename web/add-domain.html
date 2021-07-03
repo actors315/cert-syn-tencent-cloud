@@ -25,7 +25,7 @@
                         </div>
                     </div>
 
-                    <form name="AddDomain" method="post">
+                    <form name="AddDomain" class="j-validate" action="/info/add" method="post">
 
                         <div class="box-body">
                             <div class="form-group">
@@ -46,8 +46,8 @@
                                 <label class="col-sm-3 control-label">AppId</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="app_id_value" maxlength="64"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="app_id_value" maxlength="64"
                                                placeholder="域名DNS产商 AppId">
                                     </div>
                                 </div>
@@ -57,8 +57,8 @@
                                 <label class="col-sm-3 control-label">AppKey</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="app_key_value" maxlength="64"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="app_key_value" maxlength="64"
                                                placeholder="域名DNS产商 AppKey">
                                     </div>
                                 </div>
@@ -68,8 +68,8 @@
                                 <label class="col-sm-3 control-label">主域名</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="main_domain" maxlength="256"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="main_domain" maxlength="256"
                                                placeholder="主域名">
                                     </div>
                                 </div>
@@ -113,6 +113,8 @@
 
 <script src="/static/jquery.min.js"></script>
 <script src="/static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script src="/static/layer-3.1.1/dist/layer.js"></script>
+<script src="/static/jquery-validation-1.19.3/dist/jquery.validate.js"></script>
 <script src="/static/js/cert.js"></script>
 </body>
 </html>

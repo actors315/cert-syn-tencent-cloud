@@ -54,8 +54,8 @@
                                                 <td>
                                                     <a href="/info/add?id={{.IssueId}}">{{.IssueId}}</a>
                                                 </td>
-                                                <td>{{.LastIssueTime.Format "2006-01-02" }}</td>
-                                                <td>{{.LastCheckTime.Format "2006-01-02" }}</td>
+                                                <td>{{if .LastIssueTime}}{{.LastIssueTime.Format "2006-01-02" }}{{end}}</td>
+                                                <td>{{if .LastCheckTime}}{{.LastCheckTime.Format "2006-01-02" }}{{end}}</td>
                                                 <td></td>
                                             </tr>
                                         {{else}}

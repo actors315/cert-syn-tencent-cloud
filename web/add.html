@@ -25,7 +25,7 @@
                         </div>
                     </div>
 
-                    <form name="AddDomain" method="post">
+                    <form name="AddSync" class="j-validate" action="/sync/add" method="post">
 
                         <div class="box-body">
 
@@ -33,8 +33,8 @@
                                 <label class="col-sm-3 control-label">SecretId</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="secret_id" maxlength="64"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="secret_id" maxlength="64"
                                                placeholder="腾讯云API密钥，SecretId">
                                     </div>
                                 </div>
@@ -44,8 +44,8 @@
                                 <label class="col-sm-3 control-label">SecretKey</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="secret_key" maxlength="64"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="secret_key" maxlength="64"
                                                placeholder="腾讯云API密钥，SecretKey">
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
 
                                 <div class="col-sm-8">
                                     <div class="form-group">
-                                        <select class="form-control" name="type">
+                                        <select class="form-control required" name="type">
                                             {{range .CdnTypeList}}
                                                 <option value="{{.Id}}">{{.Name}}</option>
                                             {{end}}
@@ -69,8 +69,8 @@
                                 <label class="col-sm-3 control-label">加速域名</label>
 
                                 <div class="col-sm-8">
-                                    <div class="form-group required">
-                                        <input type="text" class="form-control" name="cdn_domain" maxlength="256"
+                                    <div class="form-group">
+                                        <input type="text" class="form-control required" name="cdn_domain" maxlength="256"
                                                placeholder="加速域名">
                                     </div>
                                 </div>
@@ -118,6 +118,8 @@
 
 <script src="/static/jquery.min.js"></script>
 <script src="/static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script src="/static/layer-3.1.1/dist/layer.js"></script>
+<script src="/static/jquery-validation-1.19.3/dist/jquery.validate.js"></script>
 <script src="/static/js/cert.js"></script>
 </body>
 </html>
