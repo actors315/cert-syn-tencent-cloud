@@ -30,21 +30,6 @@ type IssueInfo struct {
 	MainDomain, ExtraDomain string
 }
 
-/*废弃*/
-type Issue struct {
-	SecretId    string
-	SecretKey   string
-	AppIdName   string
-	AppIdValue  string
-	AppKeyName  string
-	AppKeyValue string
-	DnsApi      string
-	CdnType     string `default:"cdn"`
-	CdnDomain   string
-	MainDomain  string
-	ExtraDomain string
-}
-
 func (info *IssueInfo) Add() (err error) {
 
 	sql := "INSERT INTO issue_info (dns_api,app_id,app_id_value,app_key,app_key_value,main_domain,extra_domain) values (?, ?, ?, ?, ?, ?, ?)"

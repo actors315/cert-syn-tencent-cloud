@@ -37,7 +37,7 @@ func GetLatestValidRecord(domain string) (history IssueHistory) {
 
 	domain = strings.Join(arr, "','")
 
-	sqlStr = fmt.Sprintf(sqlStr, domain, now-86400*62)
+	sqlStr = fmt.Sprintf(sqlStr, domain, now-86400*31)
 
 	rows, err := db.QcloudToolDb.Query(sqlStr)
 	if err != nil {

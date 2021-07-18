@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func SignalHandler(cancel context.CancelFunc) {
@@ -16,5 +17,6 @@ func SignalHandler(cancel context.CancelFunc) {
 		default:
 			cancel()
 		}
+		time.Sleep(time.Millisecond * 100)
 	}
 }
