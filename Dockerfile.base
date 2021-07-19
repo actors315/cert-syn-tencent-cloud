@@ -24,8 +24,7 @@ RUN mkdir -p /usr/local/src/qcloud-tools \
     && ./acme.sh --install --nocron \
 # 清理
     && cd /usr/local/src \
-    && rm -rf go1.16.4.linux-amd64.tar.gz \
-    && rm -rf acme.sh.tar.gz \
+    && rm -rf * \
     && yum remove -y wget \
     && yum clean all
 
